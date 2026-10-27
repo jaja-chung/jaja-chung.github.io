@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="鍾逢彧 Feng-Yu Chung — 分子醫檢師，做流程自動化與實驗室營運工具。">
-<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>鍾逢彧 Feng-Yu Chung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -284,13 +284,11 @@
   figure.flowfig{--ff-sand:#8A6A3E;--ff-sand-soft:#F4EDE2}
   @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) figure.flowfig{--ff-sand:#CBA772;--ff-sand-soft:#241F16} }
   :root[data-theme="dark"] figure.flowfig{--ff-sand:#CBA772;--ff-sand-soft:#241F16}
-  figure.flowfig{margin:.3rem 0 0}
-  .flowfig .ff-wide{width:100%;height:auto;display:block}
-  .flowfig .ff-narrow{display:none;flex-direction:column}
-  @media (max-width:860px){
-    .flowfig .ff-wide{display:none}
-    .flowfig .ff-narrow{display:flex}
-  }
+  figure.flowfig{margin:.3rem 0 0;overflow-x:auto;overflow-y:hidden}
+  .flowfig .ff-wide{width:100%;min-width:900px;height:auto;display:block}
+  .flowfig .ff-narrow{display:none}
+  .ffswipe{margin:.45rem 0 0;font-family:var(--f-mono,var(--font-mono));font-size:.72rem;
+    color:var(--ink-3,var(--muted));text-align:right;letter-spacing:.04em}
   .flowfig text{font-family:var(--font-body);fill:var(--ink)}
   .flowfig .ttl{font-size:14.5px;font-weight:600}
   .flowfig .ttl.st{font-size:13px}
@@ -734,7 +732,7 @@
   --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --r:12px;}
 @media (prefers-color-scheme:dark){
-.pv:not([data-theme="light"]){--paper:#0C1015; --surface:#141A21; --surface-2:#1B222A; --surface-3:#11171D;
+:root:not([data-theme="light"]) .pv:not([data-theme="light"]){--paper:#0C1015; --surface:#141A21; --surface-2:#1B222A; --surface-3:#11171D;
     --ink:#E7ECF1; --ink-2:#C2CBD5; --ink-3:#8F9BA8;
     --line:#28313A; --line-2:#1E252D;
     --accent:#8CB7DC; --accent-soft:#17242F; --accent-ink:#A8CBEA;
@@ -939,13 +937,9 @@
 .pv .factbar p b{font-weight:600;color:var(--ink)}
 @media (max-width:640px){ .pv .factbar{grid-template-columns:1fr} }
 .pv /* ---------- 庫存作業流程圖 ---------- */
-.pv figure.flowfig{margin:.3rem 0 0}
-.pv .flowfig .ff-wide{width:100%;height:auto;display:block}
-.pv .flowfig .ff-narrow{display:none;flex-direction:column}
-@media (max-width:860px){
-.pv .flowfig .ff-wide{display:none}
-.pv .flowfig .ff-narrow{display:flex}
-}
+.pv figure.flowfig{margin:.3rem 0 0;overflow-x:auto;overflow-y:hidden}
+.pv .flowfig .ff-wide{width:100%;min-width:900px;height:auto;display:block}
+.pv .flowfig .ff-narrow{display:none}
 .pv .flowfig text{font-family:var(--f-body);fill:var(--ink)}
 .pv .flowfig .ttl{font-size:14.5px;font-weight:600}
 .pv .flowfig .ttl.st{font-size:13px}
@@ -1586,7 +1580,7 @@ html,body{overflow-x:clip}
       <a href="#about"><span class="zh">關於</span><span class="en">About</span></a>
       <a href="#projects"><span class="zh">專案</span><span class="en">Work</span></a>
       <a href="#principles"><span class="zh">工作方式</span><span class="en">Approach</span></a>
-      <a href="#background"><span class="zh">經歷</span><span class="en">Background</span></a>
+      <a href="#background"><span class="zh">經歷</span><span class="en">Experience</span></a>
       <a href="#contact"><span class="zh">聯絡</span><span class="en">Contact</span></a>
     </nav>
     <div class="langtoggle" role="group" aria-label="Language">
@@ -1812,7 +1806,7 @@ html,body{overflow-x:clip}
 
   <section id="background" class="band band-white split">
     <div class="sec-head" data-n="04" data-label="EXPERIENCE">
-      <h2><span class="zh">經歷與學歷</span><span class="en">Background</span></h2>
+      <h2><span class="zh">經歷與學歷</span><span class="en">Experience &amp; Education</span></h2>
       <span class="rule" aria-hidden="true"></span>
     </div>
 
@@ -3888,6 +3882,7 @@ function renderProject(key) {
       body.innerHTML = sec(cur);
       if (typeof initDemos === 'function') initDemos();
       fitNgsPills(body);
+      markFlowScroll(body);
     };
     btns.forEach(b => b.addEventListener('click', () => {
       if (cur === b.dataset.ptab) return;
@@ -3900,9 +3895,34 @@ function renderProject(key) {
     if (typeof initDemos === 'function') initDemos();
   }
   fitNgsPills(pvBody);
+  markFlowScroll(pvBody);
   addDemoJump();
   return true;
 }
+
+/* 工作流圖：寬度放不下時提示可以左右滑動 */
+function markFlowScroll(root) {
+  const scope = (root && root.querySelectorAll) ? root : document;
+  scope.querySelectorAll('figure.flowfig').forEach(f => {
+    let hint = f.nextElementSibling;
+    if (!hint || !hint.classList || !hint.classList.contains('ffswipe')) {
+      hint = document.createElement('p');
+      hint.className = 'ffswipe';
+      f.insertAdjacentElement('afterend', hint);
+    }
+    hint.textContent = X({ zh: '← 左右滑動看完整流程 →', en: '← swipe to see the whole flow →' });
+    const measure = () => { hint.hidden = !(f.scrollWidth > f.clientWidth + 2); };
+    measure();
+    /* 剛插入時版面可能還沒算好（例如專案頁還沒顯示），下一個畫格再量一次 */
+    requestAnimationFrame(measure);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure).catch(() => {});
+  });
+}
+let flowScrollTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(flowScrollTimer);
+  flowScrollTimer = setTimeout(() => markFlowScroll(pvBody), 150);
+});
 
 /* 工作流標示：底色貼齊文字本身的寬高（字型載入後再量一次，避免量到備用字型） */
 function fitNgsPills(root) {
