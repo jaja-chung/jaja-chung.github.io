@@ -1961,7 +1961,7 @@ html,body{overflow-x:clip}
         <h3><span class="zh">報帳文件自動化</span><span class="en">Reimbursement Documents, Automated</span></h3>
         <p><span class="zh">每月報帳原本需依試算表逐案分組、計算金額，再填入三份固定格式的文件。我將<strong>案件整理、金額計算與文件製作整合為自動化流程</strong>，讓使用者先查看案件與金額，確認後再產出文件。</span><span class="en">Monthly billing used to mean grouping cases from a spreadsheet one by one, working out the amounts and filling in three fixed-format documents. I <strong>brought the grouping, the arithmetic and the document work into one automated flow</strong>, where the cases and the amounts are reviewed first and the documents produced once they are confirmed.</span></p>
         <div class="win"><b><span class="zh">代表成果</span><span class="en">Outcome</span></b>
-          <span class="zh">一次整理請款資料，<strong>自動套用至多份文件並更新請款明細</strong>，降低重複計算與轉填的出錯風險。</span><span class="en">One pass over the billing data is <strong>applied to every document and written to the ledger</strong>, cutting the repeated arithmetic and re-typing where mistakes crept in.</span></div>
+          <span class="zh">一次整理請款資料，<strong>自動套用至多份文件並更新請款明細</strong>，每月作業由<strong>約 2 小時縮短至約 10 分鐘</strong>。</span><span class="en">One pass over the billing data is <strong>applied to every document and written to the ledger</strong>, taking the monthly task from <strong>about 2 hours to about 10 minutes</strong>.</span></div>
         <div class="card-bottom">
           <span><span class="zh">查看專案</span><span class="en">View project</span></span>
           <span aria-hidden="true">↗</span>
@@ -3485,8 +3485,8 @@ const SLIDES = [
     <div class="factbar">
       <div>
         <span class="lbl">${X({ zh: '實際效益', en: 'Impact' })}</span>
-        <p>${X({ zh: '同一批請款資料<b>自動套用至多份文件</b>，並更新請款明細，減少重複轉填與文件間數字不一致的風險。',
-                 en: 'One batch of billing data is <b>applied automatically to every document</b> and written to the ledger, reducing the re-typing — and the risk of the documents disagreeing with each other.' })}</p>
+        <p>${X({ zh: '同一批請款資料<b>自動套用至多份文件</b>並更新請款明細，<b>每月作業由約 2 小時縮短至約 10 分鐘</b>，減少重複轉填與文件間數字不一致的風險。',
+                 en: 'One batch of billing data is <b>applied automatically to every document</b> and written to the ledger, bringing the monthly task <b>from about 2 hours down to about 10 minutes</b> and reducing the re-typing — and the risk of the documents disagreeing with each other.' })}</p>
       </div>
       <div>
         <span class="lbl">${X({ zh: '我負責的部分', en: 'My Responsibilities' })}</span>
@@ -3531,6 +3531,37 @@ const SLIDES = [
     <p class="case-note" style="margin-top:11px">${X({
       zh: '提示訊息依問題類型處理，不一定阻擋產出；選擇「只產出、先不寄信」時，請款明細仍會更新。文件產出代表報帳文件已完成並可送出，不代表款項已核撥或完成簽核。',
       en: 'Warnings are handled according to the kind of problem and do not necessarily stop the run; choosing “generate only, don’t send yet” still updates the ledger. Producing the documents means they are ready to submit — not that payment has been approved or signed off.' })}</p>
+
+    ${secH({ zh: '每月報帳作業時間比較', en: 'Time to complete a monthly billing round' })}
+    ${ba([
+      { who: { zh: '人工作業', en: 'By hand' }, val: { zh: '約 2 小時', en: '~2 hours' },
+        segs: [ { w: 24, c: 'var(--ink-3)', l: { zh: '逐案分組', en: 'Grouping the cases' } },
+                { w: 30, c: 'var(--warn)',  l: { zh: '計算件數與金額', en: 'Counts and amounts' } },
+                { w: 18, c: 'var(--bad)',   l: { zh: '核對前期累計', en: 'Checking the running total' } },
+                { w: 28, c: 'var(--ink-2)', l: { zh: '填寫三份文件與請款明細', en: 'Filling the forms and the ledger' } } ],
+        note: { zh: '同一組資訊需逐份轉填，每份都要再核對一次。',
+                en: 'The same figures were re-typed form by form, and each form checked again.' } },
+      { who: { zh: '系統產出與確認', en: 'Generated and confirmed' }, val: { zh: '約 10 分鐘', en: '~10 minutes' },
+        segs: [ { w: 6, c: 'var(--accent)', l: { zh: '設定期間、整理與計算', en: 'Set the period, collate and compute' } },
+                { w: 8, c: 'var(--ok)',     l: { zh: '檢視案件與金額後確認產出', en: 'Review, then confirm' } },
+                { w: 86, c: 'transparent',  l: { zh: '', en: '' } } ],
+        note: { zh: '使用者只保留「確認」這一步，文件與請款明細由系統一併完成。',
+                en: 'The user keeps only the confirmation step; the documents and the ledger entry are produced together.' } }
+    ])}
+    ${legend([
+      { c: 'var(--ink-3)', l: { zh: '逐案分組', en: 'Grouping' } },
+      { c: 'var(--warn)',  l: { zh: '計算件數與金額', en: 'Counts and amounts' } },
+      { c: 'var(--bad)',   l: { zh: '核對前期累計', en: 'Running total' } },
+      { c: 'var(--ink-2)', l: { zh: '填寫文件與請款明細', en: 'Forms and ledger' } },
+      { c: 'var(--accent)', l: { zh: '系統整理與計算', en: 'Automated' } },
+      { c: 'var(--ok)',    l: { zh: '人工確認', en: 'Manual confirmation' } }
+    ])}
+    <p class="setup-note">${X({
+      zh: '時間依日常作業經驗估計，分段寬度為示意。人工作業每月約需 2 小時，須逐案分組、計算件數與金額並核對前期累計，再將相同資訊填入三份文件與請款明細；導入後約 10 分鐘完成，由系統整理與計算，使用者檢視案件與金額後確認產出。',
+      en: 'The times are estimates from day-to-day experience and the segment widths are illustrative. By hand a monthly round came to about 2 hours — grouping the cases, working out counts and amounts, checking the running total, then filling the same figures into three documents and the ledger. Now it takes about 10 minutes: the system collates and computes, and the user reviews the cases and amounts before confirming.' })}</p>
+    <p class="case-note" style="margin-top:9px">${X({
+      zh: '不含事前資料補正與需另行處理的特殊個案。',
+      en: 'This excludes fixing source data beforehand and any special cases handled separately.' })}</p>
 
     ${secH({ zh: '技術與實作', en: 'Stack and implementation' })}
     <table class="spec-t">
