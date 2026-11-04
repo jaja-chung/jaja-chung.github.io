@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" data-theme="light">
+<html lang="en" data-lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -4676,13 +4676,16 @@ function demoBlock(root) {
     }
     function apply(lang) {
       root.setAttribute('data-lang', lang);
+      root.setAttribute('lang', lang === 'en' ? 'en' : 'zh-Hant');
       if (window.__setDeckLang) window.__setDeckLang(lang);
       btnZh.setAttribute('aria-pressed', String(lang === 'zh'));
       btnEn.setAttribute('aria-pressed', String(lang === 'en'));
     }
 
+    /* 預設英文（<html data-lang="en"> 已先設好，所以不會先閃一下中文）；
+       訪客自己切換過的話，以他上次的選擇為準。 */
     var saved = read();
-    apply(saved === 'en' ? 'en' : 'zh');
+    apply(saved === 'zh' ? 'zh' : 'en');
 
     btnZh.addEventListener('click', function () { apply('zh'); write('zh'); });
     btnEn.addEventListener('click', function () { apply('en'); write('en'); });
@@ -4708,6 +4711,11 @@ function demoBlock(root) {
   var root = document.documentElement;
   var lang = function () { return root.getAttribute('data-lang') === 'en' ? 'en' : 'zh'; };
   var X = function (o) { return o[lang()]; };
+
+  /* 小幫手「講出來的話」要看這一題用什麼語言問，與介面語言無關：
+     有中日韓字就當成中文，否則當成英文。介面本身的文字仍跟著 X()。 */
+  var qLang = function (q) { return /[㐀-鿿豈-﫿]/.test(String(q || '')) ? 'zh' : 'en'; };
+  var XQ = function (o, q) { return o[qLang(q)]; };
 
   var T = {
     fab:    { zh: '需要幫忙找東西嗎？', en: 'Need help finding something?' },
@@ -5231,9 +5239,9 @@ function demoBlock(root) {
       if (turn.r.answer) {
         elBody.appendChild(aiRow(answerEl(turn.r.answer)));
       } else if (turn.r.busy) {
-        elBody.appendChild(aiRow(answerEl(X(T.busy), true)));
+        elBody.appendChild(aiRow(answerEl(XQ(T.busy, turn.q), true)));
       } else {
-        elBody.appendChild(aiRow(answerEl(X(hits.length ? T.failHit : T.failNone), true)));
+        elBody.appendChild(aiRow(answerEl(XQ(hits.length ? T.failHit : T.failNone, turn.q), true)));
       }
 
       /* 只有最後一則附上可點的頁面與重試，免得整串都是按鈕 */
@@ -5255,7 +5263,7 @@ function demoBlock(root) {
     var hits = search(q);
     elBody.textContent = '';
     elBody.appendChild(line('aih-q', X(T.asked) + q));
-    elBody.appendChild(aiRow(answerEl(X(hits.length ? T.found : T.none), true)));
+    elBody.appendChild(aiRow(answerEl(XQ(hits.length ? T.found : T.none, q), true)));
     elBody.appendChild(hits.length ? chipList(hits, 'related') : quickList('quick'));
     elBody.appendChild(resetBtn());
     elBody.scrollTop = elBody.scrollHeight;
